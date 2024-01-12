@@ -17,6 +17,7 @@ public class TwitterContext : IdentityDbContext
     public DbSet<AppUser> AppUsers { get; set; }
     public DbSet<Post> Posts { get; set; }
     public DbSet<PostReaction> PostReactions { get; set; }
+    public DbSet<Comment> Comments { get; set; }
 
     public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
     {

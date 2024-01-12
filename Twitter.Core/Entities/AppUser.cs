@@ -9,4 +9,5 @@ public class AppUser : IdentityUser
     public DateTime BirthDate { get; set; }
     public IEnumerable<Post> Posts { get; set; }
     public IEnumerable<PostReaction> Reactions { get; set; }
+    public List<Comment> Comments { get; set; }
 }

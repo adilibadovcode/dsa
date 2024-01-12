@@ -7,4 +7,5 @@ public class Post : BaseEntity
     public string AppUserId { get; set; }
     public AppUser AppUser{ get; set; }
     public ICollection<PostReaction> Reactions { get; set; }
+    public ICollection<Comment>? Comments{ get; set; }
 }

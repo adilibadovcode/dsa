@@ -220,6 +220,47 @@ namespace Twitter.DAL.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
+            modelBuilder.Entity("Twitter.Core.Entities.Comment", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<string>("AppUserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("Content")
+                        .IsRequired()
+                        .HasMaxLength(1024)
+                        .HasColumnType("nvarchar(1024)");
+
+                    b.Property<DateTime>("CreatedTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
+                    b.Property<int?>("ParentCommetId")
+                        .IsRequired()
+                        .HasColumnType("int");
+
+                    b.Property<int>("PostId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("AppUserId");
+
+                    b.HasIndex("ParentCommetId");
+
+                    b.HasIndex("PostId");
+
+                    b.ToTable("Comments");
+                });
+
             modelBuilder.Entity("Twitter.Core.Entities.Post", b =>
                 {
                     b.Property<int>("Id")
@@ -381,6 +422,33 @@ namespace Twitter.DAL.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("Twitter.Core.Entities.Comment", b =>
+                {
+                    b.HasOne("Twitter.Core.Entities.AppUser", "AppUser")
+                        .WithMany("Comments")
+                        .HasForeignKey("AppUserId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.HasOne("Twitter.Core.Entities.Comment", "ParentCommet")
+                        .WithMany("Childs")
+                        .HasForeignKey("ParentCommetId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("Twitter.Core.Entities.Post", "Post")
+                        .WithMany("Comments")
+                        .HasForeignKey("PostId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.Navigation("AppUser");
+
+                    b.Navigation("ParentCommet");
+
+                    b.Navigation("Post");
+                });
+
             modelBuilder.Entity("Twitter.Core.Entities.Post", b =>
                 {
                     b.HasOne("Twitter.Core.Entities.AppUser", "AppUser")
@@ -411,13 +479,22 @@ namespace Twitter.DAL.Migrations
                     b.Navigation("Post");
                 });
 
+            modelBuilder.Entity("Twitter.Core.Entities.Comment", b =>
+                {
+                    b.Navigation("Childs");
+                });
+
             modelBuilder.Entity("Twitter.Core.Entities.Post", b =>
                 {
+                    b.Navigation("Comments");
+
                     b.Navigation("Reactions");
                 });
 
             modelBuilder.Entity("Twitter.Core.Entities.AppUser", b =>
                 {
+                    b.Navigation("Comments");
+
                     b.Navigation("Posts");
 
                     b.Navigation("Reactions");
